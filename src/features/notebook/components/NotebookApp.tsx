@@ -3,7 +3,7 @@ import { useNotebook } from "../hooks/useNotebook";
 import { usePageNavigation, updatePageContent } from "../hooks/usePageNavigation";
 import { useReaderControls } from "../hooks/useReaderControls";
 import { downloadNotebookZip, importNotebookZip } from "../services/notebookExport";
-import type { NotebookMode, PaperColor, PaperPattern } from "../types";
+import type { NotebookMode, NotebookPage, PaperColor, PaperPattern } from "../types";
 import { IconButton } from "./IconButton";
 import { MarkdownPreview } from "./MarkdownPreview";
 import { NotebookEditor } from "./NotebookEditor";
@@ -11,12 +11,40 @@ import { NotebookReader } from "./NotebookReader";
 import { NotebookSettingsPanel } from "./NotebookSettingsPanel";
 import { PageControlBar } from "./PageControlBar";
 
+const escapeMarkdownLabel = (text: string) => text.replace(/[[\]]/g, "");
+
+const createTableOfContentsMarkdown = (notebookPages: NotebookPage[]) => {
+  const items = notebookPages.flatMap((page) => {
+    const matches = [...page.markdownContent.matchAll(/^(#{1,3})\s+(.+)$/gm)];
+    return matches.map((match) => ({
+      level: match[1].length,
+      pageNumber: page.pageNumber,
+      text: match[2].trim()
+    }));
+  });
+
+  if (items.length === 0) {
+    return "";
+  }
+
+  return [
+    "## Table of contents",
+    "",
+    ...items.map((item) => {
+      const indent = "  ".repeat(Math.max(0, item.level - 1));
+      return `${indent}- [${escapeMarkdownLabel(item.text)}](page:${item.pageNumber})`;
+    }),
+    ""
+  ].join("\n");
+};
+
 export const NotebookApp = () => {
   const { notebook, currentPageNumber, setCurrentPageNumber, updateNotebook, replaceNotebook, saveState } = useNotebook();
   const [mode, setMode] = useState<NotebookMode>("preview");
   const [isNotebookOpen, setIsNotebookOpen] = useState(false);
   const [isOpeningNotebook, setIsOpeningNotebook] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isTocEnabled, setIsTocEnabled] = useState(false);
   const [paperColor, setPaperColor] = useState<PaperColor>("warm");
   const [paperPattern, setPaperPattern] = useState<PaperPattern>("ruled");
   const editorRef = useRef<HTMLTextAreaElement | null>(null);
@@ -135,6 +163,11 @@ export const NotebookApp = () => {
     setMode("preview");
   };
 
+  const previewMarkdown =
+    isTocEnabled && currentPageNumber === 1
+      ? `${createTableOfContentsMarkdown(notebook.pages)}\n${currentPage.markdownContent}`.trim()
+      : currentPage.markdownContent;
+
   if (!isNotebookOpen) {
     return (
       <main className="cover-shell">
@@ -162,8 +195,16 @@ export const NotebookApp = () => {
       <header className="app-header">
         {mode === "edit" ? (
           <div className="editor-toolbar" aria-label="Editor toolbar">
-            <IconButton icon="check" label="Preview page" onClick={() => setMode("preview")} />
             <IconButton icon="gear" label="Open settings" onClick={() => setIsSettingsOpen(true)} />
+            <button type="button" className="heading-button" aria-label="Insert large heading" onClick={() => insertMarkdown("# ", "\n", "Heading")}>
+              H1
+            </button>
+            <button type="button" className="heading-button" aria-label="Insert medium heading" onClick={() => insertMarkdown("## ", "\n", "Heading")}>
+              H2
+            </button>
+            <button type="button" className="heading-button" aria-label="Insert small heading" onClick={() => insertMarkdown("### ", "\n", "Heading")}>
+              H3
+            </button>
             <IconButton icon="todo" label="Insert todo item" onClick={() => insertMarkdown("- [ ] ", "", "todo")} />
             <IconButton icon="list" label="Insert list item" onClick={() => insertMarkdown("- ", "", "item")} />
             <IconButton icon="link" label="Insert link" onClick={() => insertMarkdown("[", "](https://)", "link")} />
@@ -181,7 +222,7 @@ export const NotebookApp = () => {
         totalPages={navigation.totalPages}
         paperColor={paperColor}
         paperPattern={paperPattern}
-        onEdit={() => setMode("edit")}
+        onToggleEdit={() => setMode((currentMode) => (currentMode === "preview" ? "edit" : "preview"))}
         onPrevious={navigation.goToPreviousPage}
         onNext={navigation.goToNextPage}
         onToggleControls={toggleControlBar}
@@ -189,7 +230,7 @@ export const NotebookApp = () => {
         {mode === "edit" ? (
           <NotebookEditor ref={editorRef} value={currentPage.markdownContent} onChange={handleMarkdownChange} />
         ) : (
-          <MarkdownPreview markdown={currentPage.markdownContent} onPageLink={navigation.goToPage} />
+          <MarkdownPreview markdown={previewMarkdown} onPageLink={navigation.goToPage} />
         )}
       </NotebookReader>
 
@@ -197,10 +238,12 @@ export const NotebookApp = () => {
         <NotebookSettingsPanel
           paperColor={paperColor}
           paperPattern={paperPattern}
+          isTocEnabled={isTocEnabled}
           onDownload={() => void downloadNotebookZip(notebook)}
           onUpload={(file) => void handleUpload(file)}
           onPaperColorChange={setPaperColor}
           onPaperPatternChange={setPaperPattern}
+          onTocEnabledChange={setIsTocEnabled}
           onClose={() => setIsSettingsOpen(false)}
         />
       ) : null}

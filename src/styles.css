@@ -202,6 +202,22 @@ button:hover {
   width: 21px;
 }
 
+.heading-button {
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  height: 38px;
+  min-height: 38px;
+  padding: 0;
+  width: 38px;
+}
+
+.heading-button:hover {
+  background: rgba(35, 31, 32, 0.08);
+}
+
 .mode-toggle {
   border: 1px solid #73665a;
   border-radius: 7px;

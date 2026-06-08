@@ -246,3 +246,26 @@ Markdown headings still occupy normal Markdown block space, but body text and te
 
 ## Next
 Verify the lower controls do not conflict with phone browser bottom bars on the deployed page.
+
+# Iteration 13
+
+## Goal
+Make edit mode feel like a single toggle and add heading-based navigation support.
+
+## Implemented
+- Changed the lower-right pencil into an edit/preview toggle.
+- The toggle shows a pencil in preview mode and a check mark in edit mode.
+- Added large, medium, and small heading buttons to the edit toolbar.
+- Added an auto table-of-contents setting.
+- When enabled, the first page preview prepends a generated table of contents from page headings.
+
+## Tests
+- `npm test`: 19 tests passed.
+- `npm run build`: passed.
+- Pages base build with `VITE_BASE_PATH=/marude-note/`: passed.
+
+## Notes
+The generated table of contents is display-only and does not mutate stored Markdown content.
+
+## Next
+Tune the generated table of contents label language and visual spacing after mobile review.

@@ -10,7 +10,7 @@ type NotebookReaderProps = {
   paperColor: PaperColor;
   paperPattern: PaperPattern;
   children: ReactNode;
-  onEdit: () => void;
+  onToggleEdit: () => void;
   onPrevious: () => void;
   onNext: () => void;
   onToggleControls: () => void;
@@ -23,16 +23,19 @@ export const NotebookReader = ({
   paperColor,
   paperPattern,
   children,
-  onEdit,
+  onToggleEdit,
   onPrevious,
   onNext,
   onToggleControls
 }: NotebookReaderProps) => (
   <section className="reader-shell" aria-label="Notebook reader">
     <div className={`paper-page paper-${paperColor} paper-${paperPattern}`}>
-      {mode === "preview" ? (
-        <IconButton icon="pencil" label="Edit page" className="floating-pencil" onClick={onEdit} />
-      ) : null}
+      <IconButton
+        icon={mode === "preview" ? "pencil" : "check"}
+        label={mode === "preview" ? "Edit page" : "Preview page"}
+        className="floating-pencil"
+        onClick={onToggleEdit}
+      />
       <div className="page-meta">
         <span>Page {pageNumber}</span>
         <span>{totalPages} pages</span>

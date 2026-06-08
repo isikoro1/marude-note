@@ -156,4 +156,28 @@ describe("NotebookApp", () => {
     expect(screen.getByRole("button", { name: "Download ZIP" })).toBeInTheDocument();
     expect(container.querySelector(".paper-grid")).toBeInTheDocument();
   });
+
+  it("inserts headings from the edit toolbar", async () => {
+    await renderApp();
+    await switchToEdit();
+
+    await userEvent.clear(screen.getByLabelText("Markdown editor"));
+    await userEvent.click(screen.getByRole("button", { name: "Insert large heading" }));
+    await userEvent.click(screen.getByRole("button", { name: "Insert medium heading" }));
+    await userEvent.click(screen.getByRole("button", { name: "Insert small heading" }));
+
+    expect(screen.getByLabelText("Markdown editor")).toHaveValue("# Heading\n## Heading\n### Heading\n");
+  });
+
+  it("shows an automatic table of contents on the first page when enabled", async () => {
+    await renderApp();
+    await switchToEdit();
+
+    await userEvent.click(screen.getByRole("button", { name: "Open settings" }));
+    await userEvent.click(screen.getByLabelText("Auto table of contents"));
+    await switchToPreview();
+
+    expect(screen.getByText("Table of contents")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Welcome to Marude Note" })).toHaveAttribute("href", "page:1");
+  });
 });

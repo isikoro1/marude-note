@@ -4,20 +4,24 @@ import type { PaperColor, PaperPattern } from "../types";
 type NotebookSettingsPanelProps = {
   paperColor: PaperColor;
   paperPattern: PaperPattern;
+  isTocEnabled: boolean;
   onDownload: () => void;
   onUpload: (file: File) => void;
   onPaperColorChange: (paperColor: PaperColor) => void;
   onPaperPatternChange: (paperPattern: PaperPattern) => void;
+  onTocEnabledChange: (enabled: boolean) => void;
   onClose: () => void;
 };
 
 export const NotebookSettingsPanel = ({
   paperColor,
   paperPattern,
+  isTocEnabled,
   onDownload,
   onUpload,
   onPaperColorChange,
   onPaperPatternChange,
+  onTocEnabledChange,
   onClose
 }: NotebookSettingsPanelProps) => {
   const handleUpload = (event: ChangeEvent<HTMLInputElement>) => {
@@ -46,6 +50,18 @@ export const NotebookSettingsPanel = ({
           <input type="file" accept=".zip,application/zip" onChange={handleUpload} />
         </label>
       </div>
+
+      <fieldset className="settings-section">
+        <legend>Contents</legend>
+        <label>
+          <input
+            type="checkbox"
+            checked={isTocEnabled}
+            onChange={(event) => onTocEnabledChange(event.target.checked)}
+          />
+          Auto table of contents
+        </label>
+      </fieldset>
 
       <fieldset className="settings-section">
         <legend>Paper color</legend>
