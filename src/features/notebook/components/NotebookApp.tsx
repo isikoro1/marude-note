@@ -13,6 +13,8 @@ import { PageControlBar } from "./PageControlBar";
 export const NotebookApp = () => {
   const { notebook, currentPageNumber, setCurrentPageNumber, updateNotebook, saveState } = useNotebook();
   const [mode, setMode] = useState<NotebookMode>("edit");
+  const [isNotebookOpen, setIsNotebookOpen] = useState(false);
+  const [isOpeningNotebook, setIsOpeningNotebook] = useState(false);
   const { isControlBarVisible, hideControlBar, toggleControlBar } = useReaderControls();
   const navigation = usePageNavigation({
     notebook,
@@ -60,6 +62,16 @@ export const NotebookApp = () => {
     return <main className="app-shell">Loading Marude Note...</main>;
   }
 
+  const openNotebook = () => {
+    setIsOpeningNotebook(true);
+  };
+
+  const finishOpeningNotebook = () => {
+    if (isOpeningNotebook) {
+      setIsNotebookOpen(true);
+    }
+  };
+
   const handleMarkdownChange = (markdownContent: string) => {
     updateNotebook((current) => updatePageContent(current, currentPageNumber, markdownContent));
   };
@@ -71,13 +83,27 @@ export const NotebookApp = () => {
     navigation.goToPage(pageNumber);
   };
 
+  if (!isNotebookOpen) {
+    return (
+      <main className="cover-shell">
+        <button
+          type="button"
+          className={`notebook-cover${isOpeningNotebook ? " notebook-cover-opening" : ""}`}
+          onAnimationEnd={finishOpeningNotebook}
+          onClick={openNotebook}
+          data-testid="notebook-cover"
+        >
+          <span className="cover-label">Notebook</span>
+          <h1>{notebook.title}</h1>
+          <span className="cover-hint">Open</span>
+        </button>
+      </main>
+    );
+  }
+
   return (
     <main className="app-shell">
       <header className="app-header">
-        <div>
-          <p className="app-kicker">Marude Note</p>
-          <h1>{notebook.title}</h1>
-        </div>
         <div className="header-actions">
           <span className={`save-state save-state-${saveState}`}>
             {saveState === "saved" ? "Saved" : saveState === "saving" ? "Saving..." : "Unsaved changes"}

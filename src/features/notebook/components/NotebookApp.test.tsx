@@ -5,7 +5,10 @@ import { NotebookApp } from "./NotebookApp";
 
 const renderApp = async () => {
   const result = render(<NotebookApp />);
-  await screen.findByText("Marude Note", { selector: "h1" });
+  const cover = await screen.findByTestId("notebook-cover");
+  await userEvent.click(cover);
+  fireEvent.animationEnd(cover);
+  await screen.findByLabelText("Markdown editor");
   return result;
 };
 
@@ -25,6 +28,19 @@ describe("NotebookApp", () => {
   beforeEach(() => {
     window.localStorage.clear();
     vi.restoreAllMocks();
+  });
+
+  it("starts from a notebook cover before entering the workspace", async () => {
+    render(<NotebookApp />);
+
+    const cover = await screen.findByTestId("notebook-cover");
+    expect(screen.getByRole("heading", { name: "Marude Note" })).toBeInTheDocument();
+
+    await userEvent.click(cover);
+    fireEvent.animationEnd(cover);
+
+    expect(await screen.findByLabelText("Markdown editor")).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Marude Note" })).not.toBeInTheDocument();
   });
 
   it("shows the current page number and download button", async () => {

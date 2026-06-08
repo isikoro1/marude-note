@@ -157,3 +157,23 @@ Browser plugin verification could not be completed because the local node_repl k
 
 ## Next
 Perform browser smoke testing in a normal local session and then expand import/backend planning.
+
+# Iteration 9
+
+## Goal
+Improve the opening experience and simplify the workspace surface.
+
+## Implemented
+- Added a notebook cover entry screen with an opening animation.
+- Removed the notebook title from the editing workspace.
+- Replaced the vertical paper ruling with horizontal notebook lines.
+
+## Tests
+- `npm test`: 15 tests passed.
+- `npm run build`: passed.
+
+## Notes
+Browser plugin verification still fails in this environment because the local node_repl kernel exits with a Windows sandbox setup error.
+
+## Next
+Smoke test the deployed GitHub Pages build on mobile.
