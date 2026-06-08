@@ -16,4 +16,8 @@ export type Notebook = {
 
 export type NotebookMode = "edit" | "preview";
 
+export type PaperColor = "warm" | "white" | "blue";
+
+export type PaperPattern = "ruled" | "grid" | "plain";
+
 export type SaveState = "saved" | "unsaved" | "saving";

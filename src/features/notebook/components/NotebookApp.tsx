@@ -1,20 +1,28 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { useNotebook } from "../hooks/useNotebook";
 import { usePageNavigation, updatePageContent } from "../hooks/usePageNavigation";
 import { useReaderControls } from "../hooks/useReaderControls";
-import { downloadNotebookZip } from "../services/notebookExport";
-import type { NotebookMode } from "../types";
+import { downloadNotebookZip, importNotebookZip } from "../services/notebookExport";
+import type { NotebookMode, PaperColor, PaperPattern } from "../types";
+import { IconButton } from "./IconButton";
 import { MarkdownPreview } from "./MarkdownPreview";
 import { NotebookEditor } from "./NotebookEditor";
 import { NotebookReader } from "./NotebookReader";
+import { NotebookSettingsPanel } from "./NotebookSettingsPanel";
 import { PageControlBar } from "./PageControlBar";
 
 export const NotebookApp = () => {
-  const { notebook, currentPageNumber, setCurrentPageNumber, updateNotebook, saveState } = useNotebook();
-  const [mode, setMode] = useState<NotebookMode>("edit");
+  const { notebook, currentPageNumber, setCurrentPageNumber, updateNotebook, replaceNotebook, saveState } = useNotebook();
+  const [mode, setMode] = useState<NotebookMode>("preview");
   const [isNotebookOpen, setIsNotebookOpen] = useState(false);
   const [isOpeningNotebook, setIsOpeningNotebook] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [paperColor, setPaperColor] = useState<PaperColor>("warm");
+  const [paperPattern, setPaperPattern] = useState<PaperPattern>("ruled");
+  const editorRef = useRef<HTMLTextAreaElement | null>(null);
+  const undoStackRef = useRef<string[]>([]);
+  const redoStackRef = useRef<string[]>([]);
   const { isControlBarVisible, hideControlBar, toggleControlBar } = useReaderControls();
   const navigation = usePageNavigation({
     notebook,
@@ -73,7 +81,59 @@ export const NotebookApp = () => {
   };
 
   const handleMarkdownChange = (markdownContent: string) => {
+    undoStackRef.current.push(currentPage.markdownContent);
+    redoStackRef.current = [];
     updateNotebook((current) => updatePageContent(current, currentPageNumber, markdownContent));
+  };
+
+  const setCurrentMarkdown = (markdownContent: string) => {
+    updateNotebook((current) => updatePageContent(current, currentPageNumber, markdownContent));
+  };
+
+  const insertMarkdown = (before: string, after = "", fallback = "") => {
+    const editor = editorRef.current;
+    const markdown = currentPage.markdownContent;
+    const start = editor?.selectionStart ?? markdown.length;
+    const end = editor?.selectionEnd ?? markdown.length;
+    const selected = markdown.slice(start, end) || fallback;
+    const nextMarkdown = `${markdown.slice(0, start)}${before}${selected}${after}${markdown.slice(end)}`;
+
+    undoStackRef.current.push(markdown);
+    redoStackRef.current = [];
+    setCurrentMarkdown(nextMarkdown);
+
+    window.requestAnimationFrame(() => {
+      editor?.focus();
+      const cursor = start + before.length + selected.length + after.length;
+      editor?.setSelectionRange(cursor, cursor);
+    });
+  };
+
+  const undoEdit = () => {
+    const previous = undoStackRef.current.pop();
+    if (previous === undefined) {
+      return;
+    }
+
+    redoStackRef.current.push(currentPage.markdownContent);
+    setCurrentMarkdown(previous);
+  };
+
+  const redoEdit = () => {
+    const next = redoStackRef.current.pop();
+    if (next === undefined) {
+      return;
+    }
+
+    undoStackRef.current.push(currentPage.markdownContent);
+    setCurrentMarkdown(next);
+  };
+
+  const handleUpload = async (file: File) => {
+    const importedNotebook = await importNotebookZip(file);
+    replaceNotebook(importedNotebook);
+    setIsSettingsOpen(false);
+    setMode("preview");
   };
 
   const handlePageNumberSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -104,25 +164,23 @@ export const NotebookApp = () => {
   return (
     <main className="app-shell">
       <header className="app-header">
+        {mode === "edit" ? (
+          <div className="editor-toolbar" aria-label="Editor toolbar">
+            <IconButton icon="check" label="Preview page" onClick={() => setMode("preview")} />
+            <IconButton icon="gear" label="Open settings" onClick={() => setIsSettingsOpen(true)} />
+            <IconButton icon="todo" label="Insert todo item" onClick={() => insertMarkdown("- [ ] ", "", "todo")} />
+            <IconButton icon="list" label="Insert list item" onClick={() => insertMarkdown("- ", "", "item")} />
+            <IconButton icon="link" label="Insert link" onClick={() => insertMarkdown("[", "](https://)", "link")} />
+            <IconButton icon="undo" label="Undo" onClick={undoEdit} />
+            <IconButton icon="redo" label="Redo" onClick={redoEdit} />
+          </div>
+        ) : (
+          <div />
+        )}
         <div className="header-actions">
           <span className={`save-state save-state-${saveState}`}>
             {saveState === "saved" ? "Saved" : saveState === "saving" ? "Saving..." : "Unsaved changes"}
           </span>
-          <div className="mode-toggle" aria-label="View mode">
-            <button type="button" className={mode === "edit" ? "active" : ""} onClick={() => setMode("edit")}>
-              Edit
-            </button>
-            <button
-              type="button"
-              className={mode === "preview" ? "active" : ""}
-              onClick={() => setMode("preview")}
-            >
-              Preview
-            </button>
-          </div>
-          <button type="button" onClick={() => void downloadNotebookZip(notebook)}>
-            Download
-          </button>
         </div>
       </header>
 
@@ -141,16 +199,31 @@ export const NotebookApp = () => {
         mode={mode}
         pageNumber={currentPageNumber}
         totalPages={navigation.totalPages}
+        paperColor={paperColor}
+        paperPattern={paperPattern}
+        onEdit={() => setMode("edit")}
         onPrevious={navigation.goToPreviousPage}
         onNext={navigation.goToNextPage}
         onToggleControls={toggleControlBar}
       >
         {mode === "edit" ? (
-          <NotebookEditor value={currentPage.markdownContent} onChange={handleMarkdownChange} />
+          <NotebookEditor ref={editorRef} value={currentPage.markdownContent} onChange={handleMarkdownChange} />
         ) : (
           <MarkdownPreview markdown={currentPage.markdownContent} onPageLink={navigation.goToPage} />
         )}
       </NotebookReader>
+
+      {isSettingsOpen ? (
+        <NotebookSettingsPanel
+          paperColor={paperColor}
+          paperPattern={paperPattern}
+          onDownload={() => void downloadNotebookZip(notebook)}
+          onUpload={(file) => void handleUpload(file)}
+          onPaperColorChange={setPaperColor}
+          onPaperPatternChange={setPaperPattern}
+          onClose={() => setIsSettingsOpen(false)}
+        />
+      ) : null}
 
       {isControlBarVisible ? (
         <PageControlBar

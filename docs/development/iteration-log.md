@@ -177,3 +177,27 @@ Browser plugin verification still fails in this environment because the local no
 
 ## Next
 Smoke test the deployed GitHub Pages build on mobile.
+
+# Iteration 10
+
+## Goal
+Make the workspace more minimal and move editing/configuration behind lightweight controls.
+
+## Implemented
+- Switched the default workspace mode to preview.
+- Added a floating pencil button that enters edit mode.
+- Added an edit toolbar with preview, settings, todo, list, link, undo, and redo actions.
+- Moved download into a settings panel.
+- Added ZIP upload/import through the export service.
+- Added paper color and ruled/grid/plain paper pattern controls.
+
+## Tests
+- `npm test`: 17 tests passed.
+- `npm run build`: passed.
+- Pages base build with `VITE_BASE_PATH=/marude-note/`: passed.
+
+## Notes
+Undo/redo is scoped to the current editing session and page content changes.
+
+## Next
+Visually tune the floating pencil and settings panel on mobile after Pages deployment.

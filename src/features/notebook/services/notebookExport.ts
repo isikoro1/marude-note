@@ -1,5 +1,5 @@
 import JSZip from "jszip";
-import type { Notebook } from "../types";
+import type { Notebook, NotebookPage } from "../types";
 
 export type NotebookExportFile = {
   path: string;
@@ -45,4 +45,67 @@ export const downloadNotebookZip = async (notebook: Notebook) => {
   link.click();
   link.remove();
   URL.revokeObjectURL(url);
+};
+
+type NotebookMetadata = Omit<Notebook, "pages">;
+
+const isNotebookMetadata = (value: unknown): value is NotebookMetadata => {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const metadata = value as Record<string, unknown>;
+  return (
+    typeof metadata.id === "string" &&
+    typeof metadata.title === "string" &&
+    typeof metadata.lastEditedPageNumber === "number" &&
+    typeof metadata.createdAt === "string" &&
+    typeof metadata.updatedAt === "string"
+  );
+};
+
+const pageNumberFromPath = (path: string) => {
+  const match = path.match(/pages\/page-(\d+)\.md$/);
+  return match ? Number(match[1]) : null;
+};
+
+export const importNotebookZip = async (file: File): Promise<Notebook> => {
+  const zip = await JSZip.loadAsync(file);
+  const metadataFile = zip.file("marude-note/notebook.json");
+
+  if (!metadataFile) {
+    throw new Error("Missing notebook.json");
+  }
+
+  const metadata = JSON.parse(await metadataFile.async("string")) as unknown;
+  if (!isNotebookMetadata(metadata)) {
+    throw new Error("Invalid notebook metadata");
+  }
+
+  const pages: NotebookPage[] = [];
+  const pageFiles = Object.values(zip.files).filter((zipFile) => !zipFile.dir && pageNumberFromPath(zipFile.name));
+
+  for (const pageFile of pageFiles) {
+    const pageNumber = pageNumberFromPath(pageFile.name);
+    if (!pageNumber) {
+      continue;
+    }
+
+    const now = new Date().toISOString();
+    pages.push({
+      pageNumber,
+      markdownContent: await pageFile.async("string"),
+      createdAt: now,
+      updatedAt: now
+    });
+  }
+
+  if (pages.length === 0) {
+    throw new Error("No notebook pages found");
+  }
+
+  return {
+    ...metadata,
+    pages: pages.sort((a, b) => a.pageNumber - b.pageNumber)
+  };
 };

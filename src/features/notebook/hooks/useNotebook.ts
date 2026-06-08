@@ -44,6 +44,12 @@ export const useNotebook = () => {
     });
   }, []);
 
+  const replaceNotebook = useCallback((nextNotebook: Notebook) => {
+    setNotebook(nextNotebook);
+    setCurrentPageNumber(nextNotebook.lastEditedPageNumber);
+    setSaveState("unsaved");
+  }, []);
+
   useEffect(() => {
     if (!notebook || saveState !== "unsaved") {
       return;
@@ -64,6 +70,7 @@ export const useNotebook = () => {
     currentPageNumber,
     setCurrentPageNumber,
     updateNotebook,
+    replaceNotebook,
     saveState
   };
 };

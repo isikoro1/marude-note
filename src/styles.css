@@ -39,7 +39,7 @@ button:hover {
 
 .app-shell {
   min-height: 100vh;
-  padding: 24px;
+  padding: 18px;
 }
 
 .cover-shell {
@@ -137,7 +137,7 @@ button:hover {
   display: flex;
   gap: 16px;
   justify-content: space-between;
-  margin: 0 auto 16px;
+  margin: 0 auto 10px;
   max-width: 1040px;
 }
 
@@ -154,12 +154,48 @@ button:hover {
 }
 
 .header-actions,
+.editor-toolbar,
 .page-jump-form,
 .mode-toggle {
   align-items: center;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.editor-toolbar {
+  background: rgba(255, 253, 248, 0.78);
+  border: 1px solid rgba(115, 102, 90, 0.22);
+  border-radius: 999px;
+  box-shadow: 0 10px 26px rgba(35, 31, 32, 0.08);
+  padding: 6px;
+}
+
+.icon-button {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  display: inline-grid;
+  height: 38px;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0;
+  width: 38px;
+}
+
+.icon-button:hover {
+  background: rgba(35, 31, 32, 0.08);
+}
+
+.icon-button svg {
+  fill: none;
+  height: 21px;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+  width: 21px;
 }
 
 .mode-toggle {
@@ -205,15 +241,11 @@ button:hover {
   display: grid;
   margin: 0 auto;
   max-width: 1040px;
-  min-height: calc(100vh - 170px);
+  min-height: calc(100vh - 132px);
   place-items: stretch;
 }
 
 .paper-page {
-  background:
-    linear-gradient(180deg, transparent 0 31px, rgba(35, 31, 32, 0.08) 31px 32px),
-    #fffdf8;
-  background-size: 100% 32px;
   border: 1px solid #c9bba8;
   border-radius: 8px;
   box-shadow: 0 18px 40px rgba(35, 31, 32, 0.18);
@@ -221,6 +253,52 @@ button:hover {
   overflow: hidden;
   padding: 24px;
   position: relative;
+}
+
+.paper-warm {
+  background-color: #fffdf8;
+}
+
+.paper-white {
+  background-color: #ffffff;
+}
+
+.paper-blue {
+  background-color: #f4fbff;
+}
+
+.paper-ruled {
+  background-image: linear-gradient(180deg, transparent 0 31px, rgba(35, 31, 32, 0.08) 31px 32px);
+  background-size: 100% 32px;
+}
+
+.paper-grid {
+  background-image:
+    linear-gradient(180deg, transparent 0 31px, rgba(35, 31, 32, 0.06) 31px 32px),
+    linear-gradient(90deg, transparent 0 31px, rgba(35, 31, 32, 0.05) 31px 32px);
+  background-size: 32px 32px;
+}
+
+.paper-plain {
+  background-image: none;
+}
+
+.floating-pencil {
+  background: #231f20;
+  box-shadow:
+    0 12px 24px rgba(35, 31, 32, 0.2),
+    -12px 9px 0 -9px rgba(35, 31, 32, 0.22);
+  color: #fffaf1;
+  position: absolute;
+  right: 22px;
+  top: 18px;
+  transform: rotate(-18deg);
+  z-index: 3;
+}
+
+.floating-pencil:hover {
+  background: #3a3334;
+  transform: rotate(-12deg) translateY(-2px);
 }
 
 .page-meta {
@@ -302,6 +380,65 @@ button:hover {
   width: 100%;
 }
 
+.settings-panel {
+  background: #fffdf8;
+  border: 1px solid #c9bba8;
+  border-radius: 8px;
+  box-shadow: 0 18px 50px rgba(35, 31, 32, 0.22);
+  display: grid;
+  gap: 18px;
+  padding: 18px;
+  position: fixed;
+  right: 18px;
+  top: 78px;
+  width: min(360px, calc(100vw - 36px));
+  z-index: 12;
+}
+
+.settings-panel-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.settings-panel h2 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.settings-section {
+  border: 0;
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+}
+
+.settings-section legend {
+  color: #73665a;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.settings-section label {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.upload-button {
+  border: 1px solid #73665a;
+  border-radius: 6px;
+  cursor: pointer;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 12px;
+}
+
+.upload-button input {
+  display: none;
+}
+
 @media (max-width: 720px) {
   .app-shell {
     padding: 14px;
@@ -314,7 +451,7 @@ button:hover {
   }
 
   .reader-shell {
-    min-height: calc(100vh - 250px);
+    min-height: calc(100vh - 220px);
   }
 
   .paper-page {
