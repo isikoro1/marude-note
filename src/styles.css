@@ -316,16 +316,16 @@ button:hover {
     0 12px 24px rgba(35, 31, 32, 0.2),
     -12px 9px 0 -9px rgba(35, 31, 32, 0.22);
   color: #fffaf1;
-  bottom: 78px;
   position: fixed;
   right: 20px;
-  transform: rotate(-18deg);
+  top: 50%;
+  transform: translateY(-50%) rotate(-18deg);
   z-index: 12;
 }
 
 .floating-pencil:hover {
   background: #3a3334;
-  transform: rotate(-12deg) translateY(-2px);
+  transform: translateY(calc(-50% - 2px)) rotate(-12deg);
 }
 
 .page-meta {
@@ -338,13 +338,80 @@ button:hover {
 
 .notebook-editor {
   background: transparent;
-  border: 0;
   color: #231f20;
+  display: grid;
   line-height: 32px;
   min-height: 470px;
-  outline: none;
-  resize: vertical;
   width: 100%;
+}
+
+.notebook-editor-line {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  color: #231f20;
+  display: block;
+  line-height: 32px;
+  margin: 0;
+  min-height: 32px;
+  padding: 0;
+  text-align: left;
+  width: 100%;
+}
+
+.notebook-editor-line:hover {
+  background: rgba(35, 31, 32, 0.035);
+}
+
+.notebook-editor-line-active {
+  outline: none;
+  resize: none;
+}
+
+.notebook-editor-line-preview {
+  cursor: text;
+}
+
+.notebook-editor-line-preview > * {
+  margin-block: 0;
+}
+
+.notebook-editor-line-preview ul,
+.notebook-editor-line-preview ol {
+  margin-block: 0;
+  padding-inline-start: 24px;
+}
+
+.notebook-editor-line-preview input {
+  margin-right: 8px;
+}
+
+.notebook-editor-todo,
+.notebook-editor-list-item {
+  align-items: center;
+  display: inline-flex;
+  gap: 10px;
+}
+
+.notebook-editor-checkbox {
+  border: 1.5px solid #73665a;
+  border-radius: 4px;
+  display: inline-block;
+  height: 16px;
+  position: relative;
+  width: 16px;
+}
+
+.notebook-editor-checkbox.checked::after {
+  border: solid #231f20;
+  border-width: 0 2px 2px 0;
+  content: "";
+  height: 8px;
+  left: 5px;
+  position: absolute;
+  top: 1px;
+  transform: rotate(45deg);
+  width: 4px;
 }
 
 .markdown-preview {
@@ -505,7 +572,7 @@ button:hover {
   }
 
   .floating-pencil {
-    bottom: 78px;
     right: 18px;
+    top: 50%;
   }
 }

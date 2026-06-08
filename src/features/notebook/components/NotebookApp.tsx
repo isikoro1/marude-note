@@ -47,7 +47,7 @@ export const NotebookApp = () => {
   const [isTocEnabled, setIsTocEnabled] = useState(false);
   const [paperColor, setPaperColor] = useState<PaperColor>("warm");
   const [paperPattern, setPaperPattern] = useState<PaperPattern>("ruled");
-  const editorRef = useRef<HTMLTextAreaElement | null>(null);
+  const [editorSelection, setEditorSelection] = useState({ start: 0, end: 0 });
   const undoStackRef = useRef<string[]>([]);
   const redoStackRef = useRef<string[]>([]);
   const { isControlBarVisible, hideControlBar, toggleControlBar } = useReaderControls();
@@ -118,22 +118,17 @@ export const NotebookApp = () => {
   };
 
   const insertMarkdown = (before: string, after = "", fallback = "") => {
-    const editor = editorRef.current;
     const markdown = currentPage.markdownContent;
-    const start = editor?.selectionStart ?? markdown.length;
-    const end = editor?.selectionEnd ?? markdown.length;
+    const start = Math.min(editorSelection.start, markdown.length);
+    const end = Math.min(editorSelection.end, markdown.length);
     const selected = markdown.slice(start, end) || fallback;
     const nextMarkdown = `${markdown.slice(0, start)}${before}${selected}${after}${markdown.slice(end)}`;
 
     undoStackRef.current.push(markdown);
     redoStackRef.current = [];
     setCurrentMarkdown(nextMarkdown);
-
-    window.requestAnimationFrame(() => {
-      editor?.focus();
-      const cursor = start + before.length + selected.length + after.length;
-      editor?.setSelectionRange(cursor, cursor);
-    });
+    const cursor = start + before.length + selected.length + after.length;
+    setEditorSelection({ start: cursor, end: cursor });
   };
 
   const undoEdit = () => {
@@ -228,7 +223,11 @@ export const NotebookApp = () => {
         onToggleControls={toggleControlBar}
       >
         {mode === "edit" ? (
-          <NotebookEditor ref={editorRef} value={currentPage.markdownContent} onChange={handleMarkdownChange} />
+          <NotebookEditor
+            value={currentPage.markdownContent}
+            onChange={handleMarkdownChange}
+            onSelectionChange={setEditorSelection}
+          />
         ) : (
           <MarkdownPreview markdown={previewMarkdown} onPageLink={navigation.goToPage} />
         )}

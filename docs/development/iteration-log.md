@@ -290,3 +290,26 @@ Transparent page zones remain active for blank paper areas, while actual Markdow
 
 ## Next
 Confirm table-of-contents link tapping on the deployed mobile page.
+
+# Iteration 15
+
+## Goal
+Move the edit toggle away from text input and add Obsidian-like line previews while editing.
+
+## Implemented
+- Moved the lower-right pencil/check toggle to the right-middle of the viewport.
+- Replaced the single textarea editor with a line-based Markdown editor.
+- Kept only the active line as raw Markdown input.
+- Rendered unfocused lines as Markdown preview while still in edit mode.
+- Added edit-mode preview rendering for todo lines and simple bullet list lines.
+
+## Tests
+- `npm test`: 20 tests passed.
+- `npm run build`: passed.
+- Pages base build with `VITE_BASE_PATH=/marude-note/`: passed.
+
+## Notes
+The line-based editor is intentionally lightweight. It covers the requested Obsidian-like behavior for normal lines, headings, todo lines, and bullet lines without introducing a full rich-text editor dependency.
+
+## Next
+Check touch editing behavior on the deployed mobile page and tune active-line focus behavior if needed.
