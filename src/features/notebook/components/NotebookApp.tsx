@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { FormEvent } from "react";
 import { useNotebook } from "../hooks/useNotebook";
 import { usePageNavigation, updatePageContent } from "../hooks/usePageNavigation";
 import { useReaderControls } from "../hooks/useReaderControls";
@@ -136,13 +135,6 @@ export const NotebookApp = () => {
     setMode("preview");
   };
 
-  const handlePageNumberSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const pageNumber = Number(formData.get("pageNumber"));
-    navigation.goToPage(pageNumber);
-  };
-
   if (!isNotebookOpen) {
     return (
       <main className="cover-shell">
@@ -163,6 +155,10 @@ export const NotebookApp = () => {
 
   return (
     <main className="app-shell">
+      <span className={`save-state save-state-${saveState}`}>
+        {saveState === "saved" ? "Saved" : saveState === "saving" ? "Saving..." : "Unsaved changes"}
+      </span>
+
       <header className="app-header">
         {mode === "edit" ? (
           <div className="editor-toolbar" aria-label="Editor toolbar">
@@ -177,23 +173,7 @@ export const NotebookApp = () => {
         ) : (
           <div />
         )}
-        <div className="header-actions">
-          <span className={`save-state save-state-${saveState}`}>
-            {saveState === "saved" ? "Saved" : saveState === "saving" ? "Saving..." : "Unsaved changes"}
-          </span>
-        </div>
       </header>
-
-      <div className="toolbar-row">
-        <form onSubmit={handlePageNumberSubmit} className="page-jump-form">
-          <label htmlFor="pageNumber">Page</label>
-          <input id="pageNumber" name="pageNumber" type="number" min={1} max={navigation.totalPages} defaultValue={currentPageNumber} />
-          <button type="submit">Go</button>
-        </form>
-        <span>
-          Page {currentPageNumber} / {navigation.totalPages}
-        </span>
-      </div>
 
       <NotebookReader
         mode={mode}

@@ -201,3 +201,26 @@ Undo/redo is scoped to the current editing session and page content changes.
 
 ## Next
 Visually tune the floating pencil and settings panel on mobile after Pages deployment.
+
+# Iteration 11
+
+## Goal
+Reduce clutter above the notebook on mobile.
+
+## Implemented
+- Removed the top page jump form.
+- Removed the top `Page N / M` display.
+- Kept page context inside the notebook paper only.
+- Moved save state into a small fixed badge at the upper-left edge.
+- Reduced workspace top spacing so the notebook starts closer to the top of the viewport.
+
+## Tests
+- `npm test`: 17 tests passed.
+- `npm run build`: passed.
+- Pages base build with `VITE_BASE_PATH=/marude-note/`: passed.
+
+## Notes
+Page movement is still available through left/right page taps and the bottom control bar shown from the center tap zone.
+
+## Next
+Check mobile spacing on the deployed GitHub Pages build.

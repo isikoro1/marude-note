@@ -51,7 +51,8 @@ describe("NotebookApp", () => {
   it("shows the current page number and floating edit button", async () => {
     await renderApp();
 
-    expect(screen.getByText("Page 1 / 1")).toBeInTheDocument();
+    expect(screen.getByText("Page 1")).toBeInTheDocument();
+    expect(screen.getByText("1 pages")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Edit page" })).toBeInTheDocument();
   });
 
@@ -60,7 +61,8 @@ describe("NotebookApp", () => {
 
     fireEvent.click(getTapZone(container, "right"));
 
-    expect(await screen.findByText("Page 2 / 2")).toBeInTheDocument();
+    expect(await screen.findByText("Page 2")).toBeInTheDocument();
+    expect(screen.getByText("2 pages")).toBeInTheDocument();
   });
 
   it("moves to the previous page from the left tap zone", async () => {
@@ -69,7 +71,8 @@ describe("NotebookApp", () => {
     fireEvent.click(getTapZone(container, "right"));
     fireEvent.click(getTapZone(container, "left"));
 
-    expect(await screen.findByText("Page 1 / 2")).toBeInTheDocument();
+    expect(await screen.findByText("Page 1")).toBeInTheDocument();
+    expect(screen.getByText("2 pages")).toBeInTheDocument();
   });
 
   it("shows page controls from the center tap zone and navigates with the slider", async () => {
@@ -89,7 +92,7 @@ describe("NotebookApp", () => {
     await switchToEdit();
 
     expect(container.querySelector(".tap-zone-right")).not.toBeInTheDocument();
-    expect(screen.getByText("Page 1 / 1")).toBeInTheDocument();
+    expect(screen.getByText("Page 1")).toBeInTheDocument();
   });
 
   it("does not navigate with arrow keys when textarea is focused", async () => {
@@ -100,7 +103,7 @@ describe("NotebookApp", () => {
     editor.focus();
     fireEvent.keyDown(window, { key: "ArrowRight" });
 
-    expect(screen.getByText("Page 1 / 1")).toBeInTheDocument();
+    expect(screen.getByText("Page 1")).toBeInTheDocument();
   });
 
   it("saves markdown edits", async () => {
@@ -138,7 +141,8 @@ describe("NotebookApp", () => {
     await switchToPreview();
     await userEvent.click(screen.getByRole("link", { name: "Page 1" }));
 
-    expect(await screen.findByText("Page 1 / 3")).toBeInTheDocument();
+    expect(await screen.findByText("Page 1")).toBeInTheDocument();
+    expect(screen.getByText("3 pages")).toBeInTheDocument();
   });
 
   it("opens settings from edit mode and changes the paper pattern", async () => {
