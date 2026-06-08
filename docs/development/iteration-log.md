@@ -269,3 +269,24 @@ The generated table of contents is display-only and does not mutate stored Markd
 
 ## Next
 Tune the generated table of contents label language and visual spacing after mobile review.
+
+# Iteration 14
+
+## Goal
+Keep generated table-of-contents links clickable and lift lower controls upward.
+
+## Implemented
+- Raised the lower-right edit toggle higher above the phone browser edge.
+- Raised the bottom edit toolbar higher above the phone browser edge.
+- Put Markdown links above the transparent page-tap zones so table-of-contents links receive clicks first.
+
+## Tests
+- `npm test`: 19 tests passed.
+- `npm run build`: passed.
+- Pages base build with `VITE_BASE_PATH=/marude-note/`: passed.
+
+## Notes
+Transparent page zones remain active for blank paper areas, while actual Markdown links now take precedence.
+
+## Next
+Confirm table-of-contents link tapping on the deployed mobile page.
