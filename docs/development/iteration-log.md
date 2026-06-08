@@ -224,3 +224,25 @@ Page movement is still available through left/right page taps and the bottom con
 
 ## Next
 Check mobile spacing on the deployed GitHub Pages build.
+
+# Iteration 12
+
+## Goal
+Move action icons to the lower edge and align paper ruling with content.
+
+## Implemented
+- Moved the floating pencil control to the lower-right edge.
+- Moved the edit toolbar to the bottom center.
+- Scoped ruled/grid backgrounds to the notebook body area instead of the whole sheet.
+- Matched editor and preview line height to the 32px paper ruling interval.
+
+## Tests
+- `npm test`: 17 tests passed.
+- `npm run build`: passed.
+- Pages base build with `VITE_BASE_PATH=/marude-note/`: passed.
+
+## Notes
+Markdown headings still occupy normal Markdown block space, but body text and textarea lines now align to the ruling interval.
+
+## Next
+Verify the lower controls do not conflict with phone browser bottom bars on the deployed page.

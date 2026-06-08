@@ -37,7 +37,7 @@ export const NotebookReader = ({
         <span>Page {pageNumber}</span>
         <span>{totalPages} pages</span>
       </div>
-      {children}
+      <div className="paper-body">{children}</div>
       <PageTapZones
         disabled={mode === "edit"}
         onPrevious={onPrevious}

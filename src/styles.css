@@ -167,7 +167,12 @@ button:hover {
   border: 1px solid rgba(115, 102, 90, 0.22);
   border-radius: 999px;
   box-shadow: 0 10px 26px rgba(35, 31, 32, 0.08);
+  bottom: 16px;
+  left: 50%;
   padding: 6px;
+  position: fixed;
+  transform: translateX(-50%);
+  z-index: 12;
 }
 
 .icon-button {
@@ -269,19 +274,23 @@ button:hover {
   background-color: #f4fbff;
 }
 
-.paper-ruled {
+.paper-body {
+  min-height: 470px;
+}
+
+.paper-ruled .paper-body {
   background-image: linear-gradient(180deg, transparent 0 31px, rgba(35, 31, 32, 0.08) 31px 32px);
   background-size: 100% 32px;
 }
 
-.paper-grid {
+.paper-grid .paper-body {
   background-image:
     linear-gradient(180deg, transparent 0 31px, rgba(35, 31, 32, 0.06) 31px 32px),
     linear-gradient(90deg, transparent 0 31px, rgba(35, 31, 32, 0.05) 31px 32px);
   background-size: 32px 32px;
 }
 
-.paper-plain {
+.paper-plain .paper-body {
   background-image: none;
 }
 
@@ -291,11 +300,11 @@ button:hover {
     0 12px 24px rgba(35, 31, 32, 0.2),
     -12px 9px 0 -9px rgba(35, 31, 32, 0.22);
   color: #fffaf1;
-  position: absolute;
-  right: 22px;
-  top: 18px;
+  bottom: 20px;
+  position: fixed;
+  right: 20px;
   transform: rotate(-18deg);
-  z-index: 3;
+  z-index: 12;
 }
 
 .floating-pencil:hover {
@@ -315,6 +324,7 @@ button:hover {
   background: transparent;
   border: 0;
   color: #231f20;
+  line-height: 32px;
   min-height: 470px;
   outline: none;
   resize: vertical;
@@ -322,9 +332,19 @@ button:hover {
 }
 
 .markdown-preview {
-  line-height: 1.75;
+  line-height: 32px;
   min-height: 470px;
   overflow-wrap: anywhere;
+}
+
+.markdown-preview > * {
+  margin-block: 0 32px;
+}
+
+.markdown-preview h1,
+.markdown-preview h2,
+.markdown-preview h3 {
+  line-height: 32px;
 }
 
 .markdown-preview a {
@@ -458,5 +478,15 @@ button:hover {
   .paper-page {
     min-height: 520px;
     padding: 18px;
+  }
+
+  .editor-toolbar {
+    bottom: 10px;
+    max-width: calc(100vw - 20px);
+  }
+
+  .floating-pencil {
+    bottom: 18px;
+    right: 18px;
   }
 }
