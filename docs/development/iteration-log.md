@@ -336,3 +336,24 @@ The line preview experiment was removed because the focus behavior felt unstable
 
 ## Next
 Review the pencil-shaped edit toggle on the deployed mobile page.
+
+# Iteration 17
+
+## Goal
+Render Markdown task-list checkboxes correctly in preview mode.
+
+## Implemented
+- Added task-list detection for Markdown list items starting with `[ ]` or `[x]`.
+- Rendered unchecked and checked visual checkbox states in preview mode.
+- Added styles for task-list checkbox alignment.
+
+## Tests
+- `npm test`: 20 tests passed.
+- `npm run build`: passed.
+- Pages base build with `VITE_BASE_PATH=/marude-note/`: passed.
+
+## Notes
+This keeps dependencies unchanged by handling task-list display in `MarkdownPreview` instead of adding a GFM parser plugin.
+
+## Next
+Consider adding interactive checkbox toggling later if checkbox state should be editable from preview mode.

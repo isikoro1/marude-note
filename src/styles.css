@@ -406,6 +406,36 @@ button:hover {
   z-index: 4;
 }
 
+.markdown-task-list-item {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  list-style: none;
+  margin-left: -24px;
+}
+
+.markdown-checkbox {
+  border: 1.5px solid #73665a;
+  border-radius: 4px;
+  display: inline-block;
+  flex: 0 0 auto;
+  height: 16px;
+  position: relative;
+  width: 16px;
+}
+
+.markdown-checkbox.checked::after {
+  border: solid #231f20;
+  border-width: 0 2px 2px 0;
+  content: "";
+  height: 8px;
+  left: 5px;
+  position: absolute;
+  top: 1px;
+  transform: rotate(45deg);
+  width: 4px;
+}
+
 .tap-zones {
   display: grid;
   grid-template-columns: 32% 36% 32%;

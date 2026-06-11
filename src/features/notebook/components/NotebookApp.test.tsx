@@ -129,6 +129,21 @@ describe("NotebookApp", () => {
     expect(screen.getByRole("link", { name: "Google" })).toHaveAttribute("href", "https://www.google.com");
   });
 
+  it("renders markdown task list checkboxes in preview mode", async () => {
+    const { container } = await renderApp();
+    await switchToEdit();
+
+    fireEvent.change(screen.getByLabelText("Markdown editor"), {
+      target: { value: "- [ ] open task\n- [x] done task" }
+    });
+    await switchToPreview();
+
+    expect(screen.getByText("open task")).toBeInTheDocument();
+    expect(screen.getByText("done task")).toBeInTheDocument();
+    expect(container.querySelectorAll(".markdown-checkbox").length).toBe(2);
+    expect(container.querySelectorAll(".markdown-checkbox.checked").length).toBe(1);
+  });
+
   it("navigates with an internal page link", async () => {
     const { container } = await renderApp();
 
