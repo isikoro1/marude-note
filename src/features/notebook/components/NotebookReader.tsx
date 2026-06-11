@@ -33,7 +33,7 @@ export const NotebookReader = ({
       <IconButton
         icon={mode === "preview" ? "pencil" : "check"}
         label={mode === "preview" ? "Edit page" : "Preview page"}
-        className="floating-pencil"
+        className={`floating-pencil ${mode === "preview" ? "floating-pencil-drawn" : "floating-pencil-check"}`}
         onClick={onToggleEdit}
       />
       <div className="page-meta">

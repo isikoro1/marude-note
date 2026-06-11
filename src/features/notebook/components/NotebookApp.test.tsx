@@ -166,22 +166,7 @@ describe("NotebookApp", () => {
     await userEvent.click(screen.getByRole("button", { name: "Insert medium heading" }));
     await userEvent.click(screen.getByRole("button", { name: "Insert small heading" }));
 
-    expect(screen.getByRole("heading", { level: 1, name: "Heading" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { level: 2, name: "Heading" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { level: 3, name: "Heading" })).toBeInTheDocument();
-  });
-
-  it("renders an unfocused todo line like a checklist item in edit mode", async () => {
-    const { container } = await renderApp();
-    await switchToEdit();
-
-    const editor = screen.getByLabelText("Markdown editor");
-    await userEvent.clear(editor);
-    fireEvent.change(editor, { target: { value: "- [ ] task" } });
-    fireEvent.blur(editor);
-
-    expect(screen.getByText("task")).toBeInTheDocument();
-    expect(container.querySelector(".notebook-editor-checkbox")).toBeInTheDocument();
+    expect(screen.getByLabelText("Markdown editor")).toHaveValue("# Heading\n## Heading\n### Heading\n");
   });
 
   it("shows an automatic table of contents on the first page when enabled", async () => {

@@ -323,6 +323,43 @@ button:hover {
   z-index: 12;
 }
 
+.floating-pencil-drawn {
+  border-radius: 999px 6px 6px 999px;
+  height: 34px;
+  min-height: 34px;
+  width: 112px;
+}
+
+.floating-pencil-drawn::before {
+  background: #f2c45b;
+  border-radius: 999px 0 0 999px;
+  content: "";
+  height: 100%;
+  inset: 0 24px 0 0;
+  position: absolute;
+}
+
+.floating-pencil-drawn::after {
+  border-bottom: 17px solid transparent;
+  border-left: 24px solid #231f20;
+  border-top: 17px solid transparent;
+  content: "";
+  position: absolute;
+  right: -22px;
+  top: 0;
+}
+
+.floating-pencil-drawn svg {
+  color: #231f20;
+  position: relative;
+  z-index: 1;
+}
+
+.floating-pencil-check {
+  height: 42px;
+  width: 42px;
+}
+
 .floating-pencil:hover {
   background: #3a3334;
   transform: translateY(calc(-50% - 2px)) rotate(-12deg);
@@ -338,80 +375,13 @@ button:hover {
 
 .notebook-editor {
   background: transparent;
+  border: 0;
   color: #231f20;
-  display: grid;
   line-height: 32px;
   min-height: 470px;
-  width: 100%;
-}
-
-.notebook-editor-line {
-  background: transparent;
-  border: 0;
-  border-radius: 0;
-  color: #231f20;
-  display: block;
-  line-height: 32px;
-  margin: 0;
-  min-height: 32px;
-  padding: 0;
-  text-align: left;
-  width: 100%;
-}
-
-.notebook-editor-line:hover {
-  background: rgba(35, 31, 32, 0.035);
-}
-
-.notebook-editor-line-active {
   outline: none;
-  resize: none;
-}
-
-.notebook-editor-line-preview {
-  cursor: text;
-}
-
-.notebook-editor-line-preview > * {
-  margin-block: 0;
-}
-
-.notebook-editor-line-preview ul,
-.notebook-editor-line-preview ol {
-  margin-block: 0;
-  padding-inline-start: 24px;
-}
-
-.notebook-editor-line-preview input {
-  margin-right: 8px;
-}
-
-.notebook-editor-todo,
-.notebook-editor-list-item {
-  align-items: center;
-  display: inline-flex;
-  gap: 10px;
-}
-
-.notebook-editor-checkbox {
-  border: 1.5px solid #73665a;
-  border-radius: 4px;
-  display: inline-block;
-  height: 16px;
-  position: relative;
-  width: 16px;
-}
-
-.notebook-editor-checkbox.checked::after {
-  border: solid #231f20;
-  border-width: 0 2px 2px 0;
-  content: "";
-  height: 8px;
-  left: 5px;
-  position: absolute;
-  top: 1px;
-  transform: rotate(45deg);
-  width: 4px;
+  resize: vertical;
+  width: 100%;
 }
 
 .markdown-preview {
@@ -580,12 +550,12 @@ button:hover {
 
   .floating-pencil {
     right: max(28px, calc((100vw - min(980px, calc(100vw - 224px))) / 2 - 84px));
-    top: 96px;
-    transform: rotate(-12deg);
+    top: 50%;
+    transform: translateY(-50%) rotate(-12deg);
   }
 
   .floating-pencil:hover {
-    transform: translateY(-2px) rotate(-8deg);
+    transform: translateY(calc(-50% - 2px)) rotate(-8deg);
   }
 
   .editor-toolbar {

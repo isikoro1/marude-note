@@ -313,3 +313,26 @@ The line-based editor is intentionally lightweight. It covers the requested Obsi
 
 ## Next
 Check touch editing behavior on the deployed mobile page and tune active-line focus behavior if needed.
+
+# Iteration 16
+
+## Goal
+Return editing to a simpler edit/preview split and improve the edit toggle affordance.
+
+## Implemented
+- Removed the Obsidian-like line preview editor.
+- Restored edit mode to a normal full-page Markdown textarea.
+- Kept the separate preview mode for rendered Markdown.
+- Changed the preview-mode edit toggle into a wider pencil-shaped graphic.
+- Kept the edit-mode toggle as a compact check button.
+
+## Tests
+- `npm test`: 19 tests passed.
+- `npm run build`: passed.
+- Pages base build with `VITE_BASE_PATH=/marude-note/`: passed.
+
+## Notes
+The line preview experiment was removed because the focus behavior felt unstable on mobile.
+
+## Next
+Review the pencil-shaped edit toggle on the deployed mobile page.
